@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files (never commit real secrets)
+.env
+backend/.env
+frontend/.env
+
+# Build output
+dist/
+build/
+*.egg-info/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Python virtual environments
+venv/
+.venv/
+env/
