@@ -36,9 +36,11 @@ def create_app():
     from app.routes.auth import auth_bp
     from app.routes.dashboard import dashboard_bp
     from app.routes.scans import scans_bp
+    from app.routes.admin import admin_bp
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(dashboard_bp, url_prefix="/api/dashboard")
     app.register_blueprint(scans_bp, url_prefix="/api/scans")
+    app.register_blueprint(admin_bp, url_prefix="/api/admin")
 
     # Import models so SQLAlchemy registers them before create_all
     from app.models import user, scan, finding  # noqa: F401

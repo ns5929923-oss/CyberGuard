@@ -1,6 +1,8 @@
 import re
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from datetime import datetime, timezone
+
 from app import db
 from app.models.user import User
 
@@ -37,12 +39,16 @@ def register():
     if User.query.filter_by(email=email).first():
         return jsonify({"errors": {"email": "An account with this email already exists."}}), 409
 
-    user = User(name=name, email=email)
+    # New registrations always get role="user"
+    user = User(name=name, email=email, role="user", is_active=True)
     user.set_password(password)
     db.session.add(user)
     db.session.commit()
 
-    token = create_access_token(identity=str(user.id))
+    token = create_access_token(
+        identity=str(user.id),
+        additional_claims={"role": user.role},
+    )
     return jsonify({"message": "Account created successfully.", "token": token, "user": user.to_dict()}), 201
 
 
@@ -60,7 +66,17 @@ def login():
     if not user or not user.check_password(password):
         return jsonify({"error": "Invalid email or password."}), 401
 
-    token = create_access_token(identity=str(user.id))
+    if not user.is_active:
+        return jsonify({"error": "Your account has been deactivated. Please contact an administrator."}), 403
+
+    # Update last_login timestamp
+    user.last_login = datetime.now(timezone.utc)
+    db.session.commit()
+
+    token = create_access_token(
+        identity=str(user.id),
+        additional_claims={"role": user.role},
+    )
     return jsonify({"message": "Login successful.", "token": token, "user": user.to_dict()}), 200
 
 
@@ -71,4 +87,6 @@ def me():
     user = db.session.get(User, int(user_id))
     if not user:
         return jsonify({"error": "User not found."}), 404
+    if not user.is_active:
+        return jsonify({"error": "Account is deactivated."}), 403
     return jsonify({"user": user.to_dict()}), 200

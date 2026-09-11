@@ -40,10 +40,13 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
+  const isAdmin = user?.role === 'admin'
+
   const value = {
     user,
     loading,
     isAuthenticated: Boolean(user),
+    isAdmin,
     register,
     login,
     logout,

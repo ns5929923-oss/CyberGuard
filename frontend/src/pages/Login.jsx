@@ -46,8 +46,13 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      await login(form.email, form.password)
-      navigate('/dashboard')
+      const data = await login(form.email, form.password)
+      // Backend-determined role redirect
+      if (data.user?.role === 'admin') {
+        navigate('/admin/dashboard')
+      } else {
+        navigate('/dashboard')
+      }
     } catch (err) {
       const msg =
         err.response?.data?.error ||
