@@ -5,3 +5,4 @@ flask-jwt-extended>=4.6
 werkzeug>=3.0
 python-dotenv>=1.0
 requests>=2.31
+gunicorn
