@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://cyberguard-api-0b1c.onrender.com',
 })
 
 // Attach JWT token on every request if present
